@@ -1,0 +1,9 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.WhisperWall" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#9B6FF5</item>
+        <item name="colorPrimaryVariant">#7C4FD4</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="android:windowBackground">#1A1A2E</item>
+    </style>
+</resources>
