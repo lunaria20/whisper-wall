@@ -1,6 +1,8 @@
 package com.sysintegg7.potane.whisperwall.config;
 
+import com.sysintegg7.potane.whisperwall.security.JwtAccessDeniedHandler;
 import com.sysintegg7.potane.whisperwall.security.JwtAuthenticationFilter;
+import com.sysintegg7.potane.whisperwall.security.JwtAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,13 +57,13 @@ public class SecurityConfig {
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                         .accessDeniedHandler(new JwtAccessDeniedHandler()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/confessions/public").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/confessions/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .authorizeRequests(authz -> authz
+                    .antMatchers("/auth/**").permitAll()
+                    .antMatchers("/confessions/public").permitAll()
+                    .antMatchers(HttpMethod.GET, "/confessions/**").permitAll()
+                    .antMatchers(HttpMethod.GET, "/users/**").permitAll()
+                    .antMatchers("/admin/**").hasRole("ADMIN")
+                    .antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated());
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

@@ -9,7 +9,12 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "reactions")
+@Table(
+    name = "reactions",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"confession_id", "user_id"})
+    }
+)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,7 +36,4 @@ public class Reaction {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
-
-    @UniqueConstraint(columnNames = {"confession_id", "user_id"})
-    public static class Constraints {}
 }

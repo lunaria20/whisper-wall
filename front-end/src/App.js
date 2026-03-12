@@ -2,7 +2,17 @@ import { useState } from "react";
 import React from "react";
 
 // Use local backend for development, or update to your actual API URL
-const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:8080/api/v1";
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
+
+const parseResponseData = async (response) => {
+  const contentType = response.headers.get("content-type") || "";
+  if (contentType.includes("application/json")) {
+    return response.json();
+  }
+
+  const text = await response.text();
+  return { message: text || "Unexpected response from server." };
+};
 
 const api = {
   get: async (endpoint) => {
@@ -10,14 +20,14 @@ const api = {
       const response = await fetch(`${API_BASE}${endpoint}`, {
         method: "GET",
         mode: "cors",
-        credentials: "include",
+        credentials: "omit",
         headers: { 
           "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem("ww_token") || ""}`,
           "Referrer-Policy": "strict-origin-when-cross-origin"
         },
       });
-      const data = await response.json();
+      const data = await parseResponseData(response);
       return { ok: response.ok, status: response.status, data };
     } catch (err) {
       console.error("API GET Error:", err);
@@ -29,7 +39,7 @@ const api = {
       const response = await fetch(`${API_BASE}${endpoint}`, {
         method: "POST",
         mode: "cors",
-        credentials: "include",
+        credentials: "omit",
         headers: { 
           "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem("ww_token") || ""}`,
@@ -37,7 +47,7 @@ const api = {
         },
         body: JSON.stringify(body),
       });
-      const data = await response.json();
+      const data = await parseResponseData(response);
       return { ok: response.ok, status: response.status, data };
     } catch (err) {
       console.error("API POST Error:", err);
@@ -49,14 +59,14 @@ const api = {
       const response = await fetch(`${API_BASE}${endpoint}`, {
         method: "DELETE",
         mode: "cors",
-        credentials: "include",
+        credentials: "omit",
         headers: { 
           "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem("ww_token") || ""}`,
           "Referrer-Policy": "strict-origin-when-cross-origin"
         },
       });
-      const data = await response.json();
+      const data = await parseResponseData(response);
       return { ok: response.ok, status: response.status, data };
     } catch (err) {
       console.error("API DELETE Error:", err);
@@ -158,18 +168,22 @@ function LoginScreen({ onLogin, onGoSignUp }) {
 
       if (ok) {
         const token = data?.token || data?.data?.token;
-        const userEmail = data?.email || data?.data?.email || username;
+        const accountUsername = data?.username || data?.data?.username || localStorage.getItem("ww_username") || username;
+        const userEmail = data?.email || data?.data?.email || localStorage.getItem("ww_user_email") || "";
         const role = data?.role || data?.data?.role || "USER";
         
         if (token) {
           localStorage.setItem("ww_token", token);
-          localStorage.setItem("ww_user_email", userEmail);
+          if (userEmail) {
+            localStorage.setItem("ww_user_email", userEmail);
+          }
+          localStorage.setItem("ww_username", accountUsername);
           localStorage.setItem("ww_user_role", role);
         }
 
         setSuccess("✓ Login successful! Redirecting to dashboard...");
         setTimeout(() => {
-          onLogin(userEmail, token, role);
+          onLogin(accountUsername, token, role);
         }, 500);
       } else {
         setError(parseError(data, status));
@@ -188,7 +202,6 @@ function LoginScreen({ onLogin, onGoSignUp }) {
         <div className="logo-circle"><IconChat /></div>
         <h1 className="auth-title">WhisperWall</h1>
         <p className="auth-subtitle">Share your thoughts anonymously</p>
-        <div className="api-badge"><span className="api-dot" />API Connected</div>
 
         <div className="card">
           <label className="field-label">Username / Email</label>
@@ -307,7 +320,7 @@ function SignUpScreen({ onSignUp, onGoLogin }) {
 
         setSuccess("✓ Account created successfully! Redirecting to dashboard...");
         setTimeout(() => {
-          onSignUp(email, token, role);
+          onSignUp(username, token, role);
         }, 500);
       } else {
         if (status === 409) {
@@ -329,7 +342,6 @@ function SignUpScreen({ onSignUp, onGoLogin }) {
         <div className="logo-circle"><IconChat /></div>
         <h1 className="auth-title">Join WhisperWall</h1>
         <p className="auth-subtitle">Create your anonymous account</p>
-        <div className="api-badge"><span className="api-dot" />API Connected</div>
 
         <div className="card">
           <label className="field-label">Username</label>
@@ -554,48 +566,74 @@ function HomeScreen({ username, token, role, onLogout }) {
           <button className="nav-logout-btn" onClick={handleLogout}>Logout</button>
         </div>
 
-        <div className="welcome-banner">
-          <h3>Welcome back, {username}! 👋</h3>
-          <p>Share your thoughts anonymously and support others in the community.</p>
-        </div>
-
-        <div className="feed-section">
-          {error && <div className="error-box" style={{margin: "0 16px 16px 16px"}}>⚠ {error}</div>}
-          {postingBlocked && <div className="error-box" style={{margin: "0 16px 16px 16px"}}>🔒 You are temporarily blocked from posting. Contact support for more info.</div>}
-          
-          <p className="section-label">Recent Confessions</p>
-
-          {confessions.length === 0 ? (
-            <div style={{textAlign: "center", padding: "40px 20px", color: "var(--text-muted)"}}>
-              <p style={{fontSize: "16px", marginBottom: "8px"}}>No confessions yet</p>
-              <p style={{fontSize: "14px"}}>Be the first to share your anonymous thought!</p>
+        <div className="home-main-grid">
+          <section className="home-feed-panel">
+            <div className="welcome-banner">
+              <h3>Welcome back, {username}! 👋</h3>
+              <p>Share your thoughts anonymously and support others in the community.</p>
             </div>
-          ) : confessions.map((c) => (
-            <div className="confession-card" key={c.id}>
-              <div className="card-header">
-                <span className="category-tag">{c.category}</span>
-                {c.isOwn && <span className="own-tag">Your Post</span>}
-              </div>
-              <p className="confession-text">{c.text}</p>
-              <div className="card-footer">
-                <button
-                  className={`footer-btn${likedIds.includes(c.id) ? " liked" : ""}`}
-                  onClick={() => toggleLike(c.id)}
-                >
-                  <IconHeart filled={likedIds.includes(c.id)} />
-                  {c.likes}
-                </button>
-                <div className="footer-divider" />
-                {c.isOwn
-                  ? <button className="footer-btn" onClick={() => handleDeleteConfession(c.id)}>🗑 Delete</button>
-                  : <button className="footer-btn" onClick={() => {
-                      setReportingConfessionId(c.id);
-                      setShowReportModal(true);
-                    }}><IconFlag /> Report</button>}
-                <span className="footer-time">{c.time}</span>
-              </div>
+
+            <div className="feed-section">
+              {error && <div className="error-box" style={{margin: "0 0 16px 0"}}>⚠ {error}</div>}
+              {postingBlocked && <div className="error-box" style={{margin: "0 0 16px 0"}}>🔒 You are temporarily blocked from posting. Contact support for more info.</div>}
+              
+              <p className="section-label">Recent Confessions</p>
+
+              {confessions.length === 0 ? (
+                <div style={{textAlign: "center", padding: "40px 20px", color: "var(--text-muted)"}}>
+                  <p style={{fontSize: "16px", marginBottom: "8px"}}>No confessions yet</p>
+                  <p style={{fontSize: "14px"}}>Be the first to share your anonymous thought!</p>
+                </div>
+              ) : confessions.map((c) => (
+                <div className="confession-card" key={c.id}>
+                  <div className="card-header">
+                    <span className="category-tag">{c.category}</span>
+                    {c.isOwn && <span className="own-tag">Your Post</span>}
+                  </div>
+                  <p className="confession-text">{c.text}</p>
+                  <div className="card-footer">
+                    <button
+                      className={`footer-btn${likedIds.includes(c.id) ? " liked" : ""}`}
+                      onClick={() => toggleLike(c.id)}
+                    >
+                      <IconHeart filled={likedIds.includes(c.id)} />
+                      {c.likes}
+                    </button>
+                    <div className="footer-divider" />
+                    {c.isOwn
+                      ? <button className="footer-btn" onClick={() => handleDeleteConfession(c.id)}>🗑 Delete</button>
+                      : <button className="footer-btn" onClick={() => {
+                          setReportingConfessionId(c.id);
+                          setShowReportModal(true);
+                        }}><IconFlag /> Report</button>}
+                    <span className="footer-time">{c.time}</span>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </section>
+
+          <aside className="home-side-panel">
+            <div className="side-card">
+              <p className="side-kicker">Platform Overview</p>
+              <h4>Community Space</h4>
+              <p className="side-copy">Post anonymously, support others, and keep the feed respectful.</p>
+              <div className="side-metric-row">
+                <div className="side-metric">
+                  <span>{confessions.length}</span>
+                  <small>Visible posts</small>
+                </div>
+                <div className="side-metric">
+                  <span>{role}</span>
+                  <small>Current role</small>
+                </div>
+              </div>
+              <button className="side-create-btn" onClick={() => setShowModal(true)}>
+                <IconPlus />
+                New Confession
+              </button>
+            </div>
+          </aside>
         </div>
 
         <div className="fab-bar">
@@ -739,12 +777,13 @@ export default function App() {
   // Check if user is already logged in
   React.useEffect(() => {
     const savedToken = localStorage.getItem("ww_token");
+    const savedUsername = localStorage.getItem("ww_username");
     const savedEmail = localStorage.getItem("ww_user_email");
     const savedRole = localStorage.getItem("ww_user_role");
     
-    if (savedToken && savedEmail) {
+    if (savedToken && (savedUsername || savedEmail)) {
       setToken(savedToken);
-      setUsername(savedEmail);
+      setUsername(savedUsername || savedEmail);
       setRole(savedRole || "USER");
       setScreen("home");
     }
