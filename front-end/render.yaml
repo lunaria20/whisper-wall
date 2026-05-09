@@ -2,12 +2,16 @@ services:
   - type: web
     name: whisper-wall-frontend
     runtime: node
+    rootDir: front-end
     buildCommand: npm install && npm run build
     startCommand: node server.js
     envVars:
+      # Frontend API - points to your deployed Spring Boot backend
       - key: REACT_APP_API_URL
         value: https://whisper-wall-backend.onrender.com/api
+      # Supabase (optional) - for direct image storage to Supabase Storage
+      # If not set, images fall back to base64 in database
       - key: REACT_APP_SUPABASE_URL
-        value: ${REACT_APP_SUPABASE_URL}
+        value: https://mqssfwzsisxwpdiujiwl.supabase.co
       - key: REACT_APP_SUPABASE_ANON_KEY
-        value: ${REACT_APP_SUPABASE_ANON_KEY}
+        value: sb_publishable_KhZyeNKn6Kg2R9Mk8gx43Q_JcLeBYkg
