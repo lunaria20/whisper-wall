@@ -1,3 +1,4 @@
+// Java
 package com.sysintegg7.potane.whisperwall;
 
 import org.springframework.boot.SpringApplication;
@@ -28,4 +29,3 @@ public class PotaneApplication {
 		};
 	}
 }
-

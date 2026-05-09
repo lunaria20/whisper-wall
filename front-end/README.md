@@ -1,3 +1,33 @@
+# WhisperWall Frontend
+
+## Environment Setup
+
+Create a local env file for API routing:
+
+```powershell
+Copy-Item .env.example .env.local
+```
+
+Default value:
+
+```env
+REACT_APP_API_URL=http://localhost:8080/api
+```
+
+## Start Frontend
+
+```bash
+npm start
+```
+
+## One-Command Full Stack Startup (from workspace root)
+
+```powershell
+.\scripts\start-dev.ps1
+```
+
+This opens two terminals: backend (with env/secrets prompt support) and frontend.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

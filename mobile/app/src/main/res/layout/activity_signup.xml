@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F2F8"
+    android:background="@drawable/bg_screen_soft"
     android:fillViewport="true">
 
     <LinearLayout
@@ -12,28 +12,15 @@
         android:gravity="center_horizontal"
         android:paddingStart="32dp"
         android:paddingEnd="32dp"
-        android:paddingTop="60dp"
+            android:paddingTop="72dp"
         android:paddingBottom="40dp">
 
         <!-- Logo Circle -->
-        <FrameLayout
-            android:layout_width="80dp"
-            android:layout_height="80dp">
-
-            <View
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="@drawable/bg_logo_circle" />
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:src="@android:drawable/ic_menu_send"
-                android:tint="#FFFFFF"
-                android:contentDescription="WhisperWall Logo" />
-
-        </FrameLayout>
+        <ImageView
+            android:layout_width="124dp"
+            android:layout_height="124dp"
+            android:src="@mipmap/whisperwall_logo"
+            android:contentDescription="WhisperWall Logo" />
 
         <!-- Title -->
         <TextView
@@ -41,19 +28,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Join WhisperWall"
-            android:textSize="24sp"
+            android:textSize="32sp"
             android:textStyle="bold"
-            android:textColor="#6C3CE1" />
+            android:textColor="#6E2FF3" />
 
         <!-- Subtitle -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="36dp"
             android:text="Create your anonymous account"
-            android:textSize="14sp"
-            android:textColor="#888888" />
+            android:textSize="15sp"
+            android:textColor="#5E6578" />
 
         <!-- Sign Up Card -->
         <LinearLayout
@@ -61,111 +48,71 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/bg_card"
-            android:padding="24dp">
-
-            <!-- Username Label -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Username"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                android:layout_marginBottom="6dp" />
+            android:padding="20dp">
 
             <!-- Username Input -->
             <EditText
                 android:id="@+id/etUsername"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Choose a username"
-                android:textSize="14sp"
-                android:textColor="#333333"
-                android:textColorHint="#BBBBBB"
+                android:layout_height="56dp"
+                android:hint="Choose a username (3-20 characters)"
+                android:textSize="16sp"
+                android:textColor="#2F3446"
+                android:textColorHint="#6D7385"
                 android:background="@drawable/bg_input_field"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
                 android:inputType="text"
                 android:singleLine="true"
                 android:layout_marginBottom="16dp" />
-
-            <!-- Email Label -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Email"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                android:layout_marginBottom="6dp" />
 
             <!-- Email Input -->
             <EditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="56dp"
                 android:hint="your@email.com"
-                android:textSize="14sp"
-                android:textColor="#333333"
-                android:textColorHint="#BBBBBB"
+                android:textSize="16sp"
+                android:textColor="#2F3446"
+                android:textColorHint="#6D7385"
                 android:background="@drawable/bg_input_field"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
                 android:inputType="textEmailAddress"
                 android:singleLine="true"
                 android:layout_marginBottom="16dp" />
-
-            <!-- Password Label -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Password"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                android:layout_marginBottom="6dp" />
 
             <!-- Password Input -->
             <EditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="At least 8 characters"
-                android:textSize="14sp"
-                android:textColor="#333333"
-                android:textColorHint="#BBBBBB"
+                android:layout_height="56dp"
+                android:hint="8+ chars, with uppercase and number"
+                android:textSize="16sp"
+                android:textColor="#2F3446"
+                android:textColorHint="#6D7385"
                 android:background="@drawable/bg_input_field"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
                 android:inputType="textPassword"
                 android:singleLine="true"
                 android:layout_marginBottom="16dp" />
-
-            <!-- Confirm Password Label -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Confirm Password"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                android:layout_marginBottom="6dp" />
 
             <!-- Confirm Password Input -->
             <EditText
                 android:id="@+id/etConfirmPassword"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="56dp"
                 android:hint="Re-enter password"
-                android:textSize="14sp"
-                android:textColor="#333333"
-                android:textColorHint="#BBBBBB"
+                android:textSize="16sp"
+                android:textColor="#2F3446"
+                android:textColorHint="#6D7385"
                 android:background="@drawable/bg_input_field"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
                 android:inputType="textPassword"
                 android:singleLine="true"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="12dp" />
 
             <!-- Error Message (hidden by default) -->
             <TextView
@@ -183,13 +130,13 @@
             <Button
                 android:id="@+id/btnCreateAccount"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="56dp"
                 android:text="Create Account"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"
                 android:background="@drawable/bg_button_purple"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:stateListAnimator="@null" />
 
         </LinearLayout>
@@ -218,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:text="Already have an account? "
                 android:textSize="14sp"
-                android:textColor="#888888" />
+                android:textColor="#5E6578" />
 
             <TextView
                 android:id="@+id/tvLogin"
@@ -226,7 +173,7 @@
                 android:layout_height="wrap_content"
                 android:text="Log In"
                 android:textSize="14sp"
-                android:textColor="#6C3CE1"
+                android:textColor="#6E2FF3"
                 android:textStyle="bold"
                 android:clickable="true"
                 android:focusable="true" />

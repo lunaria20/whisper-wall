@@ -1,0 +1,18 @@
+package com.sysintegg7.potane.whisperwall.features.auth.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class AuthResponse {
+    private String token;
+    private String type = "Bearer";
+    private Long id;
+    private String username;
+    private String email;
+    private String displayName;
+    private String role;
+}

@@ -49,6 +49,25 @@ User identities are **never displayed publicly**, ensuring anonymity while still
 
 ---
 
+# 📸 Profile Picture Storage
+
+WhisperWall supports two methods for storing profile pictures:
+
+### 1. **Supabase Cloud Storage** (Recommended)
+- Store images in dedicated cloud storage
+- Faster uploads and better performance
+- Automatic image compression (max 500KB)
+- Falls back to base64 if not configured
+
+### 2. **Base64 Database Storage** (Default)
+- Images stored directly in database
+- Works out of the box without additional setup
+- Slower uploads due to 33% base64 encoding overhead
+
+**Setup Guide**: See [SUPABASE_STORAGE_SETUP.md](SUPABASE_STORAGE_SETUP.md) for step-by-step Supabase configuration.
+
+---
+
 # 📦 Project Scope
 
 ## ✅ Included Features
@@ -75,6 +94,18 @@ User identities are **never displayed publicly**, ensuring anonymity while still
 - Large-scale public deployment
 
 WhisperWall is designed mainly for **small communities such as schools or campus environments**.
+
+---
+
+# 📱 Android Setup
+
+The Android app talks to the Spring Boot backend over HTTP.
+
+- Emulator default: `http://10.0.2.2:8080/api/`
+- Physical device: change `API_BASE_URL` in [mobile/app/build.gradle.kts](mobile/app/build.gradle.kts) to your machine's LAN IP, for example `http://192.168.1.50:8080/api/`
+- To enable profile photo uploads to Supabase Storage, add `SUPABASE_URL` and `SUPABASE_ANON_KEY` to [mobile/local.properties](mobile/local.properties). If they are omitted, the app falls back to base64 storage.
+
+The mobile app does not connect directly to PostgreSQL; it uses the backend API, which handles the database.
 
 ---
 

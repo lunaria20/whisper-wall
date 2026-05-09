@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F0F2F8">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="#FFFFFF"
+            android:padding="12dp"
+            android:elevation="4dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Admin Dashboard"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="#3A2A5D" />
+
+            <Button
+                android:id="@+id/btnAdminProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Profile"
+                android:textAllCaps="false"
+                android:background="@drawable/bg_input_field" />
+
+            <Button
+                android:id="@+id/btnAdminLogout"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:text="Logout"
+                android:textAllCaps="false"
+                android:background="@drawable/bg_input_field"
+                android:textColor="#A03D46" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvAdminStats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="16dp"
+            android:background="#FFFFFF"
+            android:textColor="#3A2A5D"
+            android:text="Loading statistics..." />
+
+        <Button
+            android:id="@+id/btnRefreshStats"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:text="Refresh Statistics"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_input_field" />
+
+        <Button
+            android:id="@+id/btnCreateUser"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:text="Create User"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_input_field" />
+
+        <Button
+            android:id="@+id/btnDeleteUser"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:text="Delete User"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_input_field" />
+
+        <Button
+            android:id="@+id/btnRestrictUser"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:text="Restrict User"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_input_field" />
+
+        <Button
+            android:id="@+id/btnDeletePost"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:text="Delete Post"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_input_field" />
+    </LinearLayout>
+</ScrollView>

@@ -6,7 +6,7 @@ This is a Spring Boot REST API backend for the WhisperWall anonymous confession 
 ## Prerequisites
 - Java 17 or higher
 - Maven 3.6 or higher
-- MySQL 8.0 or higher
+- PostgreSQL 14 or higher
 - Node.js (for the frontend, optional for backend)
 
 ## Installation & Setup
@@ -14,16 +14,28 @@ This is a Spring Boot REST API backend for the WhisperWall anonymous confession 
 ### 1. Database Setup
 ```sql
 CREATE DATABASE whisperwall;
-USE whisperwall;
 ```
 
 ### 2. Update Application Properties
-Edit `src/main/resources/application.properties`:
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/whisperwall?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-spring.datasource.username=root
-spring.datasource.password=root
+Set environment variables before running the backend:
+
+Windows PowerShell:
+```powershell
+$env:DB_URL="jdbc:postgresql://localhost:5432/whisperwall"
+$env:DB_USERNAME="postgres"
+$env:DB_PASSWORD="your_password"
+$env:APP_JWT_SECRET="replace-with-a-long-random-secret"
 ```
+
+Linux/macOS:
+```bash
+export DB_URL="jdbc:postgresql://localhost:5432/whisperwall"
+export DB_USERNAME="postgres"
+export DB_PASSWORD="your_password"
+export APP_JWT_SECRET="replace-with-a-long-random-secret"
+```
+
+You can still place defaults in `src/main/resources/application.properties`, but secrets should stay in environment variables.
 
 ### 3. Build the Project
 ```bash
@@ -35,6 +47,24 @@ mvn clean install
 ```bash
 mvn spring-boot:run
 ```
+
+Or use the helper script to set Supabase variables and run in one command:
+
+```powershell
+.\scripts\connect-supabase.ps1
+```
+
+If you are in the repository root, run:
+
+```powershell
+.\back-end\potane\scripts\connect-supabase.ps1
+```
+
+This script reads values from `.env` first, then prompts only for missing secrets like `DB_PASSWORD` and `APP_JWT_SECRET`.
+
+Important: `.env` is parsed as Java properties. If your password contains a backslash (`\`), escape it as `\\` (example: `Apc\\kpota#2004**`).
+
+If Maven cannot resolve `spring-boot:run` by prefix in your shell, the script already uses the fully-qualified plugin command.
 
 The server will start on `http://localhost:8080/api`
 
@@ -134,7 +164,7 @@ Authorization: Bearer <your_jwt_token>
 The token is received from the login/register endpoints.
 
 ## Database Schema
-The application uses JPA/Hibernate with auto-DDL configuration. Default is `create-drop` which creates the schema on startup and drops it on shutdown.
+The application uses JPA/Hibernate with auto-DDL configuration. Default is `update`, which creates/updates schema objects as needed.
 
 For production, change in `application.properties`:
 ```properties
@@ -192,19 +222,20 @@ The frontend should call these endpoints:
 5. **Add Reaction**: `POST /api/reactions/confession/{confessionId}`
 6. **Report Content**: `POST /api/reports/confession/{confessionId}`
 
-## Environment Variables (Optional)
+## Environment Variables
 You can override properties with environment variables:
 ```bash
-export SPRING_DATASOURCE_URL=jdbc:mysql://your-host:3306/whisperwall
-export SPRING_DATASOURCE_USERNAME=your_user
-export SPRING_DATASOURCE_PASSWORD=your_password
+export DB_URL=jdbc:postgresql://your-host:5432/whisperwall
+export DB_USERNAME=your_user
+export DB_PASSWORD=your_password
+export DB_DDL_AUTO=update
 export APP_JWT_SECRET=your-long-secret-key
 ```
 
 ## Troubleshooting
 
 ### Database Connection Issues
-- Ensure MySQL is running
+- Ensure PostgreSQL is running
 - Check database credentials in `application.properties`
 - Verify the database exists
 
