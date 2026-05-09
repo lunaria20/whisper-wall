@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: whisper-wall-frontend
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: node server.js
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://whisper-wall-backend.onrender.com/api
+      - key: REACT_APP_SUPABASE_URL
+        value: ${REACT_APP_SUPABASE_URL}
+      - key: REACT_APP_SUPABASE_ANON_KEY
+        value: ${REACT_APP_SUPABASE_ANON_KEY}
