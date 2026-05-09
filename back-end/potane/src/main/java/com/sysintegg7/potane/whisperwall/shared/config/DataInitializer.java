@@ -7,6 +7,8 @@ import com.sysintegg7.potane.whisperwall.shared.repository.UserRepository;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import java.sql.Connection;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -129,7 +131,26 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void enableRestrictionRequestsRls() {
-        jdbcTemplate.execute("ALTER TABLE IF EXISTS public.restriction_requests ENABLE ROW LEVEL SECURITY");
-        log.info("Enabled RLS for restriction_requests");
+        try {
+            if (jdbcTemplate.getDataSource() == null) {
+                log.warn("No DataSource available, skipping RLS enable");
+                return;
+            }
+            try (Connection conn = Objects.requireNonNull(jdbcTemplate.getDataSource()).getConnection()) {
+                String product = conn.getMetaData().getDatabaseProductName();
+                if (product != null && product.toLowerCase().contains("postgres")) {
+                    try {
+                        jdbcTemplate.execute("ALTER TABLE IF EXISTS public.restriction_requests ENABLE ROW LEVEL SECURITY");
+                        log.info("Enabled RLS for restriction_requests");
+                    } catch (Exception e) {
+                        log.warn("Failed to enable RLS for restriction_requests: {}", e.getMessage());
+                    }
+                } else {
+                    log.info("Skipping RLS enable: database is not PostgreSQL (detected: {})", product);
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Could not determine database product name, skipping RLS enable: {}", e.getMessage());
+        }
     }
 }
