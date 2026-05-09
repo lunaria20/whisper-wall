@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: whisper-wall-backend
+    env: java
+    plan: free
+    buildCommand: cd back-end/potane && mvn clean package -DskipTests
+    startCommand: java -Dserver.port=$PORT -jar back-end/potane/target/potane-0.0.1-SNAPSHOT.jar
+    envVars:
+      - key: DB_URL
+        scope: run
+        value: ${DATABASE_URL}
+      - key: DB_USERNAME
+        scope: run
+        value: ${DB_USERNAME}
+      - key: DB_PASSWORD
+        scope: run
+        value: ${DB_PASSWORD}
+      - key: JWT_SECRET
+        scope: run
+        value: ${JWT_SECRET}
+      - key: SUPABASE_URL
+        scope: run
+        value: ${SUPABASE_URL}
+      - key: SUPABASE_ANON_KEY
+        scope: run
+        value: ${SUPABASE_ANON_KEY}
+
+databases:
+  - name: whisper-wall-db
+    plan: free
+    postgresVersion: 15
