@@ -1,0 +1,4 @@
+Redeploy trigger
+Timestamp: 2026-05-09T00:00:00Z
+
+This file is updated to force a redeploy on Render.
