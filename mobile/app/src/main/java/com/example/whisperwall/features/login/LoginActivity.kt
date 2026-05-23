@@ -28,38 +28,44 @@ class LoginActivity : Activity(), LoginContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        try {
+            setContentView(R.layout.activity_login)
 
-        presenter = LoginPresenter(appContainer.authRepository, appContainer.sessionManager)
-        presenter.attach(this)
+            presenter = LoginPresenter(appContainer.authRepository, appContainer.sessionManager)
+            presenter.attach(this)
 
-        etEmail = findViewById(R.id.etUsername)
-        etPassword = findViewById(R.id.etPassword)
-        btnLogin = findViewById(R.id.btnLogin)
-        val tvSignUp = findViewById<TextView>(R.id.tvSignUp)
-        tvError = findViewById(R.id.tvErrorMessage)
+            etEmail = findViewById(R.id.etUsername)
+            etPassword = findViewById(R.id.etPassword)
+            btnLogin = findViewById(R.id.btnLogin)
+            val tvSignUp = findViewById<TextView>(R.id.tvSignUp)
+            tvError = findViewById(R.id.tvErrorMessage)
 
-        btnLogin.setOnClickListener {
-            val identifier = etEmail.text.toString().trim()
-            val password = etPassword.text.toString().trim()
-            val identifierError = etEmail.validateLoginIdentifier()
-            val passwordError = etPassword.validatePassword()
+            btnLogin.setOnClickListener {
+                val identifier = etEmail.text.toString().trim()
+                val password = etPassword.text.toString().trim()
+                val identifierError = etEmail.validateLoginIdentifier()
+                val passwordError = etPassword.validatePassword()
 
-            clearErrors()
-            if (identifierError != null) {
-                showEmailError(identifierError)
-                return@setOnClickListener
+                clearErrors()
+                if (identifierError != null) {
+                    showEmailError(identifierError)
+                    return@setOnClickListener
+                }
+                if (passwordError != null) {
+                    showPasswordError(passwordError)
+                    return@setOnClickListener
+                }
+
+                presenter.onLoginClicked(identifier, password)
             }
-            if (passwordError != null) {
-                showPasswordError(passwordError)
-                return@setOnClickListener
+
+            tvSignUp.setOnClickListener {
+                startActivityForResult(Intent(this, RegisterActivity::class.java), registerRequestCode)
             }
-
-            presenter.onLoginClicked(identifier, password)
-        }
-
-        tvSignUp.setOnClickListener {
-            startActivityForResult(Intent(this, RegisterActivity::class.java), registerRequestCode)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error initializing app: ${e.message}", Toast.LENGTH_LONG).show()
+            android.util.Log.e("LoginActivity", "Initialization error", e)
+            finish()
         }
     }
 
