@@ -5,11 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import android.app.AlertDialog
@@ -30,6 +26,8 @@ class HomeActivity : Activity(), HomeContract.View {
     private lateinit var adapter: ConfessionAdapter
 
     private var items = listOf<HomeContract.ConfessionItem>()
+    private val createRequestCode = 2001
+    private val reportRequestCode = 2002
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +62,7 @@ class HomeActivity : Activity(), HomeContract.View {
         }
 
         findViewById<Button>(R.id.btnNewConfession).setOnClickListener {
-            openCreateDialog()
+            startActivityForResult(Intent(this, NewConfessionActivity::class.java), createRequestCode)
         }
 
         presenter.loadFeed()
@@ -81,60 +79,12 @@ class HomeActivity : Activity(), HomeContract.View {
                 .setNegativeButton("Cancel", null)
                 .show()
         } else {
-            openReportDialog(item.id)
-        }
-    }
-
-    private fun openCreateDialog() {
-        val root = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(40, 20, 40, 0)
-        }
-
-        val categories = listOf("Mental Health", "Relationships", "Personal", "Academic", "Other")
-        val spinner = Spinner(this)
-        spinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categories)
-
-        val input = EditText(this).apply {
-            hint = "What's on your mind?"
-            minLines = 4
-            maxLines = 6
-        }
-
-        root.addView(spinner)
-        root.addView(input)
-
-        AlertDialog.Builder(this)
-            .setTitle("Share Your Confession")
-            .setView(root)
-            .setPositiveButton("Post") { _, _ ->
-                val error = input.validateConfession()
-                if (error != null) {
-                    showError(error)
-                    return@setPositiveButton
-                }
-                val content = input.text.toString().trim()
-                val category = spinner.selectedItem.toString()
-                presenter.onPostConfession(content, category)
+            val intent = Intent(this, ReportConfessionActivity::class.java).apply {
+                putExtra(ReportConfessionActivity.EXTRA_CONFESSION_ID, item.id)
+                putExtra(ReportConfessionActivity.EXTRA_CONFESSION_CONTENT, item.content)
             }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
-    private fun openReportDialog(confessionId: Long) {
-        val reasons = listOf("Inappropriate content", "Harassment", "Spam", "Hate speech", "Self-harm", "Other")
-        val spinner = Spinner(this)
-        spinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, reasons)
-
-        AlertDialog.Builder(this)
-            .setTitle("Report Confession")
-            .setView(spinner)
-            .setPositiveButton("Submit") { _, _ ->
-                val reason = spinner.selectedItem.toString().sanitizeReportReason()
-                presenter.onReportConfession(confessionId, reason)
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
+            startActivityForResult(intent, reportRequestCode)
+        }
     }
 
     override fun showWelcome(username: String) {
@@ -158,6 +108,20 @@ class HomeActivity : Activity(), HomeContract.View {
 
     override fun showMessage(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode != RESULT_OK) return
+
+        when (requestCode) {
+            createRequestCode -> {
+                showMessage("Confession posted")
+                presenter.loadFeed()
+            }
+            reportRequestCode -> showMessage("Report submitted")
+        }
     }
 
     override fun onDestroy() {

@@ -1,12 +1,26 @@
 # Whisper Wall Frontend - Render Deployment Guide
 
-This guide walks through deploying the React frontend to Render and connecting it to your backend.
+## Architecture Overview
+
+This is a **pure React frontend** that calls a **separate Spring Boot backend**.
+
+```
+User Browser
+    ↓
+React App (this frontend)
+    ├→ Backend API: https://whisper-wall-backend.onrender.com/api
+    └→ Supabase Storage: https://mqssfwzsisxwpdiujiwl.supabase.co (optional)
+```
+
+**Important**: Database credentials and secret keys stay on the backend. The frontend only needs:
+- API URL to call the backend
+- Supabase public keys (ANON_KEY) for optional image storage
 
 ## Prerequisites
 
 - Render account (free tier available at https://render.com)
 - GitHub repository with your code pushed
-- Backend already deployed to Render (e.g., https://whisper-wall-backend.onrender.com)
+- Backend already deployed to Render: https://whisper-wall-backend.onrender.com
 
 ## Backend API URL
 
@@ -43,7 +57,7 @@ git push origin main
 
 ### Step 3: Set Environment Variables
 
-In the Render dashboard for your web service, go to **"Environment"** and add:
+In the Render dashboard for your web service, go to **"Environment"** and add **ONLY these variables**:
 
 ```
 REACT_APP_API_URL = https://whisper-wall-backend.onrender.com/api
@@ -51,7 +65,13 @@ REACT_APP_SUPABASE_URL = https://mqssfwzsisxwpdiujiwl.supabase.co
 REACT_APP_SUPABASE_ANON_KEY = sb_publishable_KhZyeNKn6Kg2R9Mk8gx43Q_JcLeBYkg
 ```
 
-**Note**: Environment variables prefixed with `REACT_APP_` are baked into the frontend build and visible in the browser.
+**⚠️ SECURITY WARNING**: 
+- **DO NOT** add database URLs, passwords, or secret keys to frontend environment variables
+- **DO NOT** add `SUPABASE_SECRET_KEY` or `SUPABASE_SERVICE_ROLE_KEY` to frontend
+- **DO NOT** expose `APP_JWT_SECRET` or any backend secrets
+- Frontend code runs in the browser where anyone can read it
+
+Variables prefixed with `REACT_APP_` are baked into the build and visible in browser source code.
 
 ### Step 4: Deploy
 
@@ -126,11 +146,28 @@ To force a redeploy without code changes:
 
 ## Environment Variables Reference
 
-| Variable | Local | Production |
-|----------|-------|------------|
+### Frontend Variables (Safe for Frontend - Use in Render)
+
+| Variable | Local Dev | Production |
+|----------|-----------|------------|
 | `REACT_APP_API_URL` | `http://localhost:8080/api` | `https://whisper-wall-backend.onrender.com/api` |
-| `REACT_APP_SUPABASE_URL` | Your Supabase URL | Same |
-| `REACT_APP_SUPABASE_ANON_KEY` | Your Anon Key | Same |
+| `REACT_APP_SUPABASE_URL` | `https://mqssfwzsisxwpdiujiwl.supabase.co` | Same |
+| `REACT_APP_SUPABASE_ANON_KEY` | `sb_publishable_KhZyeNKn6Kg2R9Mk8gx43Q_JcLeBYkg` | Same |
+
+### Backend Variables (Backend Only - DO NOT expose to frontend)
+
+These belong on your Spring Boot backend, NOT in frontend env vars:
+
+| Variable | Purpose |
+|----------|---------|
+| `DB_URL` | PostgreSQL connection string |
+| `DB_USERNAME` | Database user |
+| `DB_PASSWORD` | Database password |
+| `SUPABASE_SECRET_KEY` | Supabase admin/backend key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase backend key (bypasses RLS) |
+| `APP_JWT_SECRET` | JWT signing key |
+
+**Any of these exposed to frontend = security vulnerability**
 
 ## Project Structure
 

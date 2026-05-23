@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="category_button_height">58dp</dimen>
+    <dimen name="category_button_gap">10dp</dimen>
+    <dimen name="report_reason_height">58dp</dimen>
+    <dimen name="report_reason_gap">12dp</dimen>
+</resources>

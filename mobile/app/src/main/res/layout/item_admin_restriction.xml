@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="#FFFFFF"
+    android:layout_margin="6dp"
+    android:elevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvRestrictionUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Request #0"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="#3A2A5D" />
+
+            <TextView
+                android:id="@+id/tvRestrictionDays"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="User: username (7d)"
+                android:textSize="12sp"
+                android:textColor="#666666"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/tvRestrictionReason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Reason: violation details..."
+                android:textSize="11sp"
+                android:textColor="#999999"
+                android:layout_marginTop="4dp"
+                android:maxLines="1"
+                android:ellipsize="end" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/btnRejectRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Reject"
+            android:textAllCaps="false"
+            android:textSize="11sp"
+            android:background="@drawable/bg_input_field"
+            android:textColor="#A03D46"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/btnApproveRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Approve"
+            android:textAllCaps="false"
+            android:textSize="11sp"
+            android:background="@drawable/bg_input_field"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
+    </LinearLayout>
+</LinearLayout>

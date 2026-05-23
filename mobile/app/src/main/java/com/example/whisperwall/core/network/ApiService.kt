@@ -90,4 +90,19 @@ interface ApiService {
 
     @PUT("admin/posts/{id}")
     suspend fun updateAdminPost(@Path("id") postId: Long, @Body body: JsonObject): Response<JsonObject>
+
+    @GET("admin/posts")
+    suspend fun getAllAdminPosts(@Query("page") page: Int, @Query("size") size: Int): Response<JsonObject>
+
+    @GET("admin/users")
+    suspend fun getAllAdminUsers(@Query("page") page: Int, @Query("size") size: Int): Response<JsonObject>
+
+    @GET("admin/restriction-requests/pending")
+    suspend fun getPendingRestrictionRequests(@Query("page") page: Int, @Query("size") size: Int): Response<JsonObject>
+
+    @POST("admin/restriction-requests/{requestId}/approve")
+    suspend fun approveRestrictionRequest(@Path("requestId") requestId: Long, @Body body: JsonObject): Response<JsonObject>
+
+    @POST("admin/restriction-requests/{requestId}/reject")
+    suspend fun rejectRestrictionRequest(@Path("requestId") requestId: Long, @Query("reason") reason: String): Response<JsonObject>
 }

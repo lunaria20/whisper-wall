@@ -5,9 +5,12 @@ import com.example.whisperwall.core.util.stringOrNull
 import com.google.gson.JsonObject
 
 class ReportRepository(private val apiService: ApiService) {
-    suspend fun submitReport(confessionId: Long, reason: String): Result<Unit> {
+    suspend fun submitReport(confessionId: Long, reason: String, details: String = ""): Result<Unit> {
         val body = JsonObject().apply {
             addProperty("reason", reason.trim())
+            if (details.isNotBlank()) {
+                addProperty("description", details.trim())
+            }
         }
 
         val response = apiService.reportConfession(confessionId, body)
